@@ -8,12 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import userModel from "./user-model.js";
+import bcrypt from "bcrypt";
 export const create_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield userModel.create(req.body);
+        const { email, username, password } = req.body;
+        const hashed_password = yield bcrypt.hash(password, 10);
+        req.body.password = hashed_password;
+        const created = yield userModel.create({ email, username, password: hashed_password });
         res.status(200).json({
             sucess: true,
-            message: 'created user successfully'
+            message: 'created user successfully',
+            data: created
         });
     }
     catch (error) {
