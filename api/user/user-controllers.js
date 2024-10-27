@@ -26,7 +26,7 @@ export const create_user = (req, res, next) => __awaiter(void 0, void 0, void 0,
 });
 export const delete_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield userModel.deleteOne(req.body._id);
+        yield userModel.findByIdAndDelete(req.params._id);
         res.status(200).json({
             sucess: true,
             message: 'deleted user successfull'
@@ -37,6 +37,40 @@ export const delete_user = (req, res, next) => __awaiter(void 0, void 0, void 0,
             success: false,
             message: 'error when trying to delete user'
         });
-        console.error('Could not delete user');
+        console.error('Could not delete user', error.message);
+    }
+});
+export const modify_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userModel.findByIdAndUpdate(req.params._id, req.body);
+        res.status(200).json({
+            success: true,
+            message: 'modified user successfully'
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'error when trying to modify user'
+        });
+        console.error('Could not modify user', error.message);
+    }
+});
+export const get_users = (req, res, Next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield userModel.find();
+        console.log(users);
+        res.status(200).json({
+            success: true,
+            message: 'Users acquired',
+            data: users
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'error when trying to get users list'
+        });
+        console.error('Could not retrieved users list', error.message);
     }
 });
