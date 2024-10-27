@@ -24,3 +24,19 @@ export const create_user = (req, res, next) => __awaiter(void 0, void 0, void 0,
         console.error('Could not create user', error.message);
     }
 });
+export const delete_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userModel.deleteOne(req.body._id);
+        res.status(200).json({
+            sucess: true,
+            message: 'deleted user successfull'
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'error when trying to delete user'
+        });
+        console.error('Could not delete user');
+    }
+});

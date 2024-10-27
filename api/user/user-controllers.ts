@@ -16,3 +16,19 @@ export const create_user = async (req: Request, res: Response, next: NextFunctio
     console.error('Could not create user', error.message)
   }
 }
+
+export const delete_user = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await userModel.deleteOne(req.body._id)
+    res.status(200).json({
+      sucess: true,
+      message: 'deleted user successfull'
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'error when trying to delete user'
+    })
+    console.error('Could not delete user')
+  }
+}
