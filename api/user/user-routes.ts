@@ -8,11 +8,11 @@ userRouter
   .post(create_user)
 
 userRouter
-  .route('/delete_user/:_id')
+  .route('/delete_user/:id')
   .delete(delete_user)
 
 userRouter
-  .route('/modify_user/:_id')
+  .route('/modify_user/:id')
   .put(modify_user)
 
 userRouter

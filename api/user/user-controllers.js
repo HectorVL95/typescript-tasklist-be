@@ -31,23 +31,23 @@ export const create_user = (req, res, next) => __awaiter(void 0, void 0, void 0,
 });
 export const delete_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield userModel.findByIdAndDelete(req.params._id);
+        yield userModel.findByIdAndDelete(req.params.id);
         res.status(200).json({
             sucess: true,
-            message: 'deleted user successfull'
+            message: 'Deleted user successfull'
         });
     }
     catch (error) {
         res.status(500).json({
             success: false,
-            message: 'error when trying to delete user'
+            message: 'Error when trying to delete user'
         });
         console.error('Could not delete user', error.message);
     }
 });
 export const modify_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield userModel.findByIdAndUpdate(req.params._id, req.body);
+        yield userModel.findByIdAndUpdate(req.params.id, req.body);
         res.status(200).json({
             success: true,
             message: 'modified user successfully'

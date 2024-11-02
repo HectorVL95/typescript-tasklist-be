@@ -7,6 +7,71 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const create_task = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+import taskModel from "./task-model.js";
+export const create_task = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const task = yield taskModel.create(req.body);
+        res.status(200).json({
+            success: true,
+            message: 'Task successfully created',
+            data: task,
+        });
+    }
+    catch (error) {
+        console.error('could not createtask', error.message);
+        res.status(500).json({
+            sucess: false,
+            message: 'Error at creating task',
+        });
+    }
 });
-export {};
+export const delete_task = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield taskModel.findByIdAndDelete(req.params.id);
+        res.status(200).json({
+            sucess: true,
+            message: 'Deleted task successfully',
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error at deleting task',
+        });
+        console.error('Could not delete task', error.message);
+    }
+});
+export const modify_task = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const task = yield taskModel.findByIdAndUpdate(req.params.id, req.body);
+        res.status(200).json({
+            success: true,
+            message: 'Updated task successfully',
+            data: task
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error at updating task'
+        });
+        console.error('Could not delete task', error.message);
+    }
+});
+export const show_tasks = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const tasks = yield taskModel.find();
+        res.status(200).json({
+            success: true,
+            message: 'Tasks shown successfully',
+            data: tasks
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error at showing tasks'
+        });
+        console.error('Could not show tasks', error.message);
+    }
+});
