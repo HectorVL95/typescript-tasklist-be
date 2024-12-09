@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import taskModel from "./task-model.js";
+import userModel from "../user/user-model.js";
+
+const JWT_SECRET:string = process.env.JWT_SECRET || 'This is secret';
 
 export const create_task = async (req: Request, res: Response, next: NextFunction) => {
     try {
-       const task = await taskModel.create(req.body)
+      const { name, completed } = req.body
+      const owner = req.headers.authorization
+      const task = await taskModel.create({ name, completed, owner })
       res.status(200).json({
         success: true,
         message: 'Task successfully created',
@@ -66,5 +71,22 @@ export const show_tasks = async (req: Request, res: Response, next: NextFunction
       message: 'Error at showing tasks'
     })
     console.error('Could not show tasks', error.message)
+  }
+}
+
+export const complete_task = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const task = await taskModel.findByIdAndUpdate(req.params.id, req.body)
+    res.status(200).json({
+      success: true,
+      message: 'Successful change of completion',
+      data: task
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Error when completing a task'
+    })
+    console.error('Error completing the task', error.message)
   }
 }

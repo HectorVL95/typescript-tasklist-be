@@ -7,8 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import userModel from "./user-model.js";
-import bcrypt from "bcrypt";
+import userModel from './user-model.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+const JWT_SECRET = process.env.JWT_SECRET || 'This is secret';
 export const create_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, username, password } = req.body;
@@ -61,7 +63,7 @@ export const modify_user = (req, res, next) => __awaiter(void 0, void 0, void 0,
         console.error('Could not modify user', error.message);
     }
 });
-export const get_users = (req, res, Next) => __awaiter(void 0, void 0, void 0, function* () {
+export const get_users = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield userModel.find();
         console.log(users);
@@ -77,5 +79,40 @@ export const get_users = (req, res, Next) => __awaiter(void 0, void 0, void 0, f
             message: 'error when trying to get users list'
         });
         console.error('Could not retrieved users list', error.message);
+    }
+});
+export const login_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield userModel.findOne({ username: req.body.username });
+        if (!user) {
+            res.status(401).json({
+                success: false,
+                message: 'User not found'
+            });
+            return;
+        }
+        const password_valid = yield bcrypt.compare(req.body.password, user.password);
+        if (password_valid) {
+            const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET, { expiresIn: "1h" });
+            const decoded = jwt.decode(token);
+            res.status(200).json({
+                success: true,
+                message: 'Success loging in',
+                token
+            });
+        }
+        else {
+            res.status(401).json({
+                success: false,
+                message: 'Credentials invalid'
+            });
+        }
+    }
+    catch (error) {
+        console.error('Error loging: ', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Loging error'
+        });
     }
 });
