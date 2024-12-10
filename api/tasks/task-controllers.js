@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'This is secret';
 export const create_task = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, completed } = req.body;
-        const owner = req.headers.authorization;
+        const owner = req.user.userId;
         const task = yield taskModel.create({ name, completed, owner });
         res.status(200).json({
             success: true,
@@ -62,8 +62,9 @@ export const modify_task = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 });
 export const show_tasks = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const tasks = yield taskModel.find();
+        const tasks = yield taskModel.find({ owner: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId });
         res.status(200).json({
             success: true,
             message: 'Tasks shown successfully',

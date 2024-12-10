@@ -7,8 +7,8 @@ const JWT_SECRET:string = process.env.JWT_SECRET || 'This is secret';
 export const create_task = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name, completed } = req.body
-      const owner = req.headers.authorization
-      const task = await taskModel.create({ name, completed, owner })
+      const owner = req.user.userId
+      const task = await taskModel.create({ name, completed, owner})
       res.status(200).json({
         success: true,
         message: 'Task successfully created',
@@ -59,7 +59,7 @@ export const modify_task = async (req: Request, res: Response, next: NextFunctio
 
 export const show_tasks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const tasks = await taskModel.find()
+    const tasks = await taskModel.find({owner: req.user?.userId})
     res.status(200).json({
       success: true,
       message: 'Tasks shown successfully',

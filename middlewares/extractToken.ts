@@ -1,4 +1,5 @@
 import {Request, Response, NextFunction} from 'express'
+import jwt, { decode } from 'jsonwebtoken'
 
 export const extractToken = (req: Request, res: Response, next: NextFunction) => {
   const authorization = req.headers.authorization
@@ -8,6 +9,9 @@ export const extractToken = (req: Request, res: Response, next: NextFunction) =>
   }
 
   const token = authorization.split(' ')[1];
+  const decoded = jwt.decode(token)
+  req.user = decoded
+  console.log(req.user.userId)
   req.token = token
   next();
 }

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 const Task = new Schema({
   name: {
@@ -9,7 +9,8 @@ const Task = new Schema({
     default: false
   },
   owner: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: 'User'
   },
 })
 
